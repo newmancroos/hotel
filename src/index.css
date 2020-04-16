@@ -1,0 +1,58 @@
+/* body,
+html {
+  overflow: hidden;
+} */
+#app {
+  max-width: 850px;
+  margin: 0 auto;
+}
+nav {
+  padding: 20px 0 20px 0;
+  background-color: #cbecf9;
+}
+#adminMenu {
+  background-color: #f7f9f9;
+  padding: 1px 15px;
+  height: 73vh;
+  color: darkblue;
+}
+.adminContainer {
+  padding: 1px 1px 1px 1px !important;
+  min-height: 82vh;
+}
+#appFooter {
+  background-color: #cbecf9;
+}
+
+.adminMenuItem {
+  width: 100%;
+  padding: 5px 5px;
+}
+
+.page-title {
+  font-size: 30px;
+  font-weight: bolder;
+  text-decoration: underline;
+}
+.table-header {
+  background-color: #083d4a;
+  color: white;
+  font-weight: bold;
+}
+.row-space {
+  margin-top: 10px;
+}
+
+.content-lable {
+  padding: 0px 1px !important;
+}
+
+.content-control {
+  height: 30px !important;
+}
+
+.dropdown {
+  height: 100px;
+  border-radius: 0.25rem;
+  width: 100%;
+}
