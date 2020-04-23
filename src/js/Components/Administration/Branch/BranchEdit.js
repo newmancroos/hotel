@@ -6,18 +6,6 @@ import Error from "../../Common/Error";
 import axios from "axios";
 import PropTypes from "prop-types";
 
-const formValid = (formErros, ...rest) => {
-  let valid = treu;
-  Object.values(formErros).forEach((val) => {
-    val.length > 0 && (valid = false);
-  });
-
-  // Object.values(rest).forEach((val) => {
-  //   val === nullv && (valid = false);
-  // });
-
-  return valid;
-};
 class Edit extends Component {
   constructor(props) {
     super(props);
@@ -133,6 +121,111 @@ class Edit extends Component {
   }
   handleChange(e) {
     const { name, value, type, checked } = e.target;
+    let errors = this.validateForm(name, value);
+    this.setState({ errors, [name]: value }, () => {
+      console.log(errors);
+    });
+    type == "checkbox"
+      ? this.setState({ [name]: checked })
+      : this.setState({ [name]: value });
+  }
+  submitForm(e) {
+    e.preventDefault();
+    if (!this.ifFormValid()) return false;
+    let data = {
+      id: parseInt(this.state.id),
+      name: this.state.name,
+      address1: this.state.address1,
+      address2: this.state.address2,
+      city: this.state.city,
+      stateId: parseInt(this.state.stateId),
+      countryId: parseInt(this.state.countryId),
+      zipcode: this.state.zipCode,
+    };
+
+    if (this.state.mode == 1) {
+      fetch("https://localhost:44325/branch/edit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
+        .then(() => {
+          alert("Branch successfully updated");
+          this.props.history.push("/administrator/branch");
+        })
+        .catch(function (error) {
+          alert(error);
+        });
+    } else {
+      fetch("https://localhost:44325/branch/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
+        .then((msg) => {
+          alert("Branch successfully added");
+          this.props.history.push("/administrator/branch");
+        })
+        .catch(function (error) {
+          alert(error);
+        });
+    }
+    // axios
+    //   .post("https://localhost:44325/branch/edit", data)
+    //   .then(response => response.json())
+    //   .then(() => {
+    //     alert("Branch successfully updated");
+    //   });
+  }
+  // fillStateData = data => {
+  //   //console.log(data);
+  //   this.setState({ id: data.data.id, name: data.data.name });
+  // };
+  cancelClick = (e) => {
+    e.preventDefault();
+    this.props.history.push("/administrator/branch");
+  };
+  ifFormValid = () => {
+    var isValid = true;
+    let errorsobj = this.state.errors;
+    if (this.state.id === null || this.state.id === 0) {
+      isValid = false;
+      errorsobj.id = "Id should not be empty or 0!";
+    }
+    if (this.state.name === null || this.state.name.length < 5) {
+      isValid = false;
+      errorsobj.name = "Name must be 5 or more characters long!";
+    }
+    if (this.state.address1 === null || this.state.address1.length == 0) {
+      isValid = false;
+      errorsobj.address1 = "Address1 is require!";
+    }
+    if (this.state.city === null || this.state.city.length == 0) {
+      isValid = false;
+      errorsobj.city = "City is require!";
+    }
+
+    if (this.state.countryId === null || this.state.countryId == "0") {
+      isValid = false;
+      errorsobj.countryId = "Country is require!";
+    }
+    if (this.state.stateId === null || this.state.stateId == "0") {
+      isValid = false;
+      errorsobj.stateId = "State is require!";
+    }
+    if (this.state.zipCode === null || this.state.zipCode.length == 0) {
+      isValid = false;
+      errorsobj.zipCode = "Zipcode is require!";
+    }
+    this.setState({ errorsobj });
+    return isValid;
+  };
+
+  validateForm = (name, value) => {
     let errors = this.state.errors;
     switch (name) {
       case "id":
@@ -171,73 +264,8 @@ class Edit extends Component {
       default:
         break;
     }
-    this.setState({ errors, [name]: value }, () => {
-      console.log(errors);
-    });
-    type == "checkbox"
-      ? this.setState({ [name]: checked })
-      : this.setState({ [name]: value });
-  }
-  submitForm(e) {
-    e.preventDefault();
-    let data = {
-      id: parseInt(this.state.id),
-      name: this.state.name,
-      address1: this.state.address1,
-      address2: this.state.address2,
-      city: this.state.city,
-      stateId: parseInt(this.state.stateId),
-      countryId: parseInt(this.state.countryId),
-      zipcode: this.state.zipCode,
-    };
-
-    if (this.state.mode == 1) {
-      fetch("https://localhost:44325/branch/edit", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      })
-        .then(() => {
-          alert("Branch successfully updated");
-          this.props.history.push("/administrator/branch");
-        })
-        .catch(function (error) {
-          alert(error);
-        });
-    } else {
-      fetch("https://localhost:44325/branch/add", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      })
-        .then((msg) => {
-          alert("Branch successfully updated");
-          this.props.history.push("/administrator/branch");
-        })
-        .catch(function (error) {
-          alert(error);
-        });
-    }
-    // axios
-    //   .post("https://localhost:44325/branch/edit", data)
-    //   .then(response => response.json())
-    //   .then(() => {
-    //     alert("Branch successfully updated");
-    //   });
-  }
-  // fillStateData = data => {
-  //   //console.log(data);
-  //   this.setState({ id: data.data.id, name: data.data.name });
-  // };
-  cancelClick = (e) => {
-    e.preventDefault();
-    this.props.history.push("/administrator/branch");
+    return errors;
   };
-
   render() {
     return (
       <div>
