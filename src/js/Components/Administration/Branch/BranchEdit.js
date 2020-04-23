@@ -5,19 +5,33 @@ import Loading from "../../Common/Loading";
 import Error from "../../Common/Error";
 import axios from "axios";
 import PropTypes from "prop-types";
+
+const formValid = (formErros, ...rest) => {
+  let valid = treu;
+  Object.values(formErros).forEach((val) => {
+    val.length > 0 && (valid = false);
+  });
+
+  // Object.values(rest).forEach((val) => {
+  //   val === nullv && (valid = false);
+  // });
+
+  return valid;
+};
 class Edit extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      id: 0,
-      name: "",
-      address1: "",
-      address2: "",
-      city: "",
-      stateId: 0,
-      countryId: 0,
-      zipCode: "",
+      id: null,
+      name: null,
+      address1: null,
+      address2: null,
+      city: null,
+      stateId: null,
+      countryId: null,
+      zipCode: null,
       errors: {
+        id: "",
         name: "",
         address1: "",
         address2: "",
@@ -33,6 +47,7 @@ class Edit extends Component {
       stateForCountry: [],
       loading: true,
       mode: 0,
+      isSaveEnable: true,
     };
     this.handleChange = this.handleChange.bind(this);
     this.submitForm = this.submitForm.bind(this);
@@ -58,16 +73,17 @@ class Edit extends Component {
             return res.json();
           })
           .then((data) => {
+            var states = this.state.states.filter(
+              (c) => c.countryId == data.data.countryId
+            );
             this.setState({
               id: data.data.id,
               name: data.data.name,
               address1: data.data.address1,
               address2: data.data.address2,
               countryId: data.data.countryId,
+              stateForCountry: states,
               stateId: data.data.stateId,
-              stateForCountry: this.state.states.filter(
-                (c) => c.countryId == data.data.countryId
-              ),
               city: data.data.city,
               zipCode: data.data.zipCode,
             });
@@ -76,8 +92,6 @@ class Edit extends Component {
       );
     }
   }
-  // componentDidUpdate(prevProps, prevState) {}
-
   getAllCountriesAndStates() {
     return Promise.all([this.getAllCountries(), this.getAllStates()]);
   }
@@ -137,6 +151,9 @@ class Edit extends Component {
           this.setState({ stateForCountry: state4Country });
         }
         break;
+      case "stateId":
+        errors.stateId = value == 0 ? "State is Requied" : "";
+        break;
       default:
         break;
     }
@@ -149,12 +166,6 @@ class Edit extends Component {
   }
   submitForm(e) {
     e.preventDefault();
-    let header = new Headers({
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "POST, GET, OPTIONS,DELETE",
-      "Access-Control-Allow-Headers": "Origin, Content-Type, Accept",
-      "Content-Type": "application/json",
-    });
     let data = {
       id: parseInt(this.state.id),
       name: this.state.name,
@@ -165,13 +176,6 @@ class Edit extends Component {
       countryId: parseInt(this.state.countryId),
       zipcode: this.state.zipCode,
     };
-    // const requestOptions = {
-    //   method: "POST",
-    //   headers: header,
-    //   mode: "cors",
-    //   cache: "no-cache",
-    //   body: JSON.stringify(data),
-    // };
 
     if (this.state.mode == 1) {
       fetch("https://localhost:44325/branch/edit", {
@@ -219,6 +223,7 @@ class Edit extends Component {
     e.preventDefault();
     this.props.history.push("/administrator/branch");
   };
+
   render() {
     return (
       <div>

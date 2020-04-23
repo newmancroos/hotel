@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import ReactDOM from "react-dom";
 function BranchEditFor(props) {
   return (
-    <form onSubmit={props.submitForm}>
+    <form onSubmit={props.submitForm} className="needs-validation" noValidate>
       <div className="container  col-lg-10">
         <div className="row">
           <div className="col col-lg-12 page-title text-center">
@@ -13,8 +13,9 @@ function BranchEditFor(props) {
           <div className="col col-lg-2 text-right content-lable">Id :</div>
           <div className="col col-lg-2 ">
             <input
+              required
               type="number"
-              className="form-control content-control smal-text"
+              className={"form-control content-control smal-text"}
               name="id"
               placeholder="Id"
               onChange={props.handleChange}
@@ -27,8 +28,9 @@ function BranchEditFor(props) {
           <div className="col col-lg-2 text-right content-lable">Name :</div>
           <div className="col col-lg-4 ">
             <input
+              required
               type="text"
-              className="form-control content-control"
+              className={"form-control content-control"}
               name="name"
               placeholder="Branch Name"
               onChange={props.handleChange}
@@ -139,7 +141,11 @@ function BranchEditFor(props) {
         </div>
         <div className="row row-space">
           <div className="col col-lg-2 text-right content-lable">
-            <button id="btnUpdate" className="btn btn-primary">
+            <button
+              id="btnUpdate"
+              className="btn btn-primary"
+              disabled={!props.isSaveEnable}
+            >
               Update
             </button>
           </div>
