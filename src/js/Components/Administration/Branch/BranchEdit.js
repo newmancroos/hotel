@@ -138,7 +138,7 @@ class Edit extends Component {
       case "id":
         errors.id =
           this.state.mode === 0
-            ? value.length === 0
+            ? value.length === 0 || value === "0"
               ? "Id should not be empty or 0!"
               : ""
             : "";
