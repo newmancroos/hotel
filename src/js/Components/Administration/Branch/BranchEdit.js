@@ -135,12 +135,23 @@ class Edit extends Component {
     const { name, value, type, checked } = e.target;
     let errors = this.state.errors;
     switch (name) {
+      case "id":
+        errors.id =
+          this.state.mode === 0
+            ? value.length === 0
+              ? "Id should not be empty or 0!"
+              : ""
+            : "";
+        break;
       case "name":
         errors.name =
           value.length < 5 ? "Name must be 5 or more characters long!" : "";
         break;
       case "address1":
         errors.address1 = value.length == 0 ? "Address1 is require" : "";
+        break;
+      case "city":
+        errors.city = value.length == 0 ? "City is require" : "";
         break;
       case "countryId":
         errors.countryId = value == 0 ? "Country is require" : "";
@@ -153,6 +164,9 @@ class Edit extends Component {
         break;
       case "stateId":
         errors.stateId = value == 0 ? "State is Requied" : "";
+        break;
+      case "zipCode":
+        errors.zipCode = value.length == 0 ? "Zipcode is require" : "";
         break;
       default:
         break;
